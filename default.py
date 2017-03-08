@@ -9,10 +9,24 @@ import os  # Needed for clearing the terminal in a clear manner
 import sys  # Needed for seemless restarts
 import random
 import time
+import shelve # Needed for saving highscore
 #########
+#Set a few variables so eveything doesnt explode
+highscore = 0
+highname = "N/A"
+
+
 
 os.system("clear")
+d = shelve.open('highscore')
+try: # Just in case the file doesn't exist 
+	highscore = d['percent']
+	highname = d['name']
+except:
+	lo = 1
+	
 print ("Welcome to the python name sorting program")
+print "Highscore is %", highscore, "by", highname.title()
 name = raw_input("What is your name? ")
 os.system("clear")
 
@@ -48,8 +62,19 @@ while 1 == 1:
 			if total == 31:
 				wins = wins + 1
 		
-		print "You rolled 31,", wins,"/", rolls, "times"
+		percent = 1. * wins / rolls
+		percent = percent * 100
+		
+		if highscore < percent: #If the highscore is lower then current roll then write to file
+			d = shelve.open('highscore') # here you will save details of the Highscore
+			d['percent'] = percent       # thats all, now ;ercentit is saved on disk.
+			d['name'] = name       	# thats all, now it is saved on disk.
+			d.close()
+		
+		
+		print "You rolled 31,", wins,"/", rolls, "times. Or %",percent, "of the time"
+		
+		
 		wait = raw_input("PRESS ENTER TO CONTINUE")
 		test()
-		
 	test()
